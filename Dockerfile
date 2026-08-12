@@ -4,6 +4,7 @@
 ARG PYTHON_IMAGE=python:3.11-slim
 FROM ${PYTHON_IMAGE} AS builder
 ENV PYTHONUNBUFFERED=1 PIP_NO_CACHE_DIR=1
+ENV DEBIAN_FRONTEND=noninteractive
 
 # Install build dependencies (Pillow needs libjpeg headers etc.)
 RUN apt-get update \
@@ -36,6 +37,9 @@ RUN apt-get update \
 RUN adduser --disabled-password --gecos "" yadreno || true
 
 WORKDIR /app
+
+# Ensure app dirs exist and are owned by the runtime user (numeric UID preserved into volumes)
+RUN mkdir -p /app/logs /app/database && chown -R yadreno:yadreno /app/logs /app/database || true
 
 # Copy installed Python packages from builder
 COPY --from=builder /install /usr/local
