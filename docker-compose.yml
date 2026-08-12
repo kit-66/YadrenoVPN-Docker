@@ -13,8 +13,18 @@ services:
       - BOT_TOKEN=${BOT_TOKEN}
       - ADMIN_IDS=${ADMIN_IDS}
     volumes:
-      - ./data/database:/app/database
-      - ./data/logs:/app/logs
-      # If you prefer to mount a prepared config.py (recommended for secrets):
-      # - ./config.py:/app/config.py:ro
-    # No ports are exposed: bot initiates outbound connections to Telegram APIs
+      - yadreno_db:/app/database
+      - yadreno_logs:/app/logs
+    # user: "1000:1000"   # опция: принудительно запускать процесс под uid 1000 (по желанию)
+
+  init-perms:
+    image: alpine:latest
+    command: ["sh", "-c", "mkdir -p /app/logs /app/database && chown -R 1000:1000 /app/logs /app/database && chmod -R u+rwX /app/logs /app/database"]
+    volumes:
+      - yadreno_db:/app/database
+      - yadreno_logs:/app/logs
+    restart: "no"
+
+volumes:
+  yadreno_db:
+  yadreno_logs:
