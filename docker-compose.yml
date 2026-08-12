@@ -1,0 +1,20 @@
+version: "3.8"
+services:
+  yadreno:
+    build:
+      context: .
+      args:
+        REPO_URL: ${REPO_URL}
+        REPO_REF: ${REPO_REF}
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - BOT_TOKEN=${BOT_TOKEN}
+      - ADMIN_IDS=${ADMIN_IDS}
+    volumes:
+      - ./data/database:/app/database
+      - ./data/logs:/app/logs
+      # If you prefer to mount a prepared config.py (recommended for secrets):
+      # - ./config.py:/app/config.py:ro
+    # No ports are exposed: bot initiates outbound connections to Telegram APIs
