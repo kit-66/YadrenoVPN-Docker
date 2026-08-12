@@ -31,8 +31,14 @@ else
           admin_py+="$i, "
         done
         admin_py="${admin_py%, }]"
-        # Replace existing ADMIN_IDS block
-        sed -i '/^ADMIN_IDS = \[/, /\]/c\'"$admin_py"" /app/config.py
+        # Replace existing ADMIN_IDS block using awk to avoid quoting issues
+        awk -v new="$admin_py" '
+          BEGIN {repl=0}
+          /^ADMIN_IDS = \[/ { print new; repl=1; next }
+          repl && /\]/ { repl=0; next }
+          repl { next }
+          { print }
+        ' /app/config.py > /app/config.py.tmp && mv /app/config.py.tmp /app/config.py
       fi
     fi
 
