@@ -30,7 +30,7 @@ ENV PYTHONUNBUFFERED=1
 
 # Runtime libs required by Pillow and related packages
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends libjpeg62-turbo libfreetype6 libopenjp2-7 ca-certificates git \
+    && apt-get install -y --no-install-recommends bash libjpeg62-turbo libfreetype6 libopenjp2-7 ca-certificates git \
     && rm -rf /var/lib/apt/lists/*
 
 # Create non-root user
